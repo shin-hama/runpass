@@ -1,21 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function ProfileScreen() {
+  const { user, loading } = useAuth();
+
+  if (loading || !user) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#2563EB" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.nickname}>ランナー #----</Text>
+      <Text style={styles.nickname}>{user.nickname}</Text>
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
-          <Text style={styles.statValue}>0</Text>
+          <Text style={styles.statValue}>{user.totalRuns}</Text>
           <Text style={styles.statLabel}>ラン回数</Text>
         </View>
         <View style={styles.statItem}>
-          <Text style={styles.statValue}>0.0 km</Text>
+          <Text style={styles.statValue}>{user.totalDistance.toFixed(1)} km</Text>
           <Text style={styles.statLabel}>総距離</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statValue}>0</Text>
-          <Text style={styles.statLabel}>すれ違い</Text>
         </View>
       </View>
     </View>
