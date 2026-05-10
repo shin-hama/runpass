@@ -25,6 +25,10 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+*-debug.log
+
+# Cloud Functions build output
+functions/lib/
 
 # macOS
 .DS_Store
