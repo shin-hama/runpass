@@ -11,14 +11,17 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const isNew = getApps().length === 0;
+const app = isNew ? initializeApp(firebaseConfig) : getApps()[0];
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-if (process.env.EXPO_PUBLIC_USE_EMULATOR === 'true') {
-  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-  connectFirestoreEmulator(db, 'localhost', 8080);
+// isNew で初回モジュールロード時のみ接続し、Fast Refresh による二重接続を防ぐ
+if (isNew && process.env.EXPO_PUBLIC_USE_EMULATOR === 'true') {
+  const host = process.env.EXPO_PUBLIC_EMULATOR_HOST ?? 'localhost';
+  connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
+  connectFirestoreEmulator(db, host, 8080);
 }
 
 export default app;
